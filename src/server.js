@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from 'express';
 import mysql from 'mysql2/promise';
 
@@ -6,14 +7,14 @@ const app = express();
 app.use(express.json());
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "1234",
-    database: "user_db",
-    port: 3306,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    waitForConnections: process.env.DB_WAITFORCONNECTIONS,
+    connectionLimit: process.env.DB_CONNECTIONLIMIT,
+    queueLimit: process.env.DB_QUEUELIMIT
 });
 
 
@@ -31,7 +32,7 @@ app.post('/users', async (req, res) => {
         res.status(201).json({ msg: "Usuário criado com sucesso" })
     }
     catch (erro) {
-        console.error("Erro ao criar usuário")
+        console.error(erro)
         res.status(500).json({ msg: "Erro ao criar usuários" })
 }
 })
@@ -47,7 +48,7 @@ app.get('/users', async (req, res) => {
         res.status(200).json(rows[0]);
     }
     catch (erro) {
-        console.error("Erro ao listar usuários")
+        console.error("Erro ao listar usuários", erro)
         res.status(500).json({ msg: "Erro ao listar usuários" })
     }
 })
@@ -67,7 +68,7 @@ app.delete('/users/:id', async (req, res) => {
         res.status(200).json({ msg: "Usuario deletado com sucess!" })
     }
     catch (erro) {
-        console.error("Erro ao deletar usuário.")
+        console.error("Erro ao deletar usuário.", erro)
         res.status(500).json({ msg: "Erro ao deletar usuário." })
     }
 })
@@ -88,7 +89,7 @@ app.put('/users/:id', async (req, res) => {
         res.status(200).json({ msg: "Usuário atualizado com sucesso" })
     }
     catch(erro) {
-        console.error("Erro ao atualizar usuário")
+        console.error("Erro ao atualizar usuário", erro)
         res.status(500).json({ msg: "Erro ao atualizar usuários" })
     }
 
